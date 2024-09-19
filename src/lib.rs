@@ -31,11 +31,15 @@
 //! # fn main() {}
 //! ```
 
-#[cfg(not(any(feature = "runtime-tokio", feature = "runtime-async-std")))]
-compile_error!("one of 'runtime-async-std' or 'runtime-tokio' features must be enabled");
+#[cfg(not(any(feature = "runtime-tokio", feature = "runtime-async-std", feature = "runtime-smol")))]
+compile_error!("one of 'runtime-smol', 'runtime-async-std' or 'runtime-tokio' features must be enabled");
 
-#[cfg(all(feature = "runtime-tokio", feature = "runtime-async-std"))]
-compile_error!("only one of 'runtime-async-std' or 'runtime-tokio' features must be enabled");
+#[cfg(any(
+    all(feature = "runtime-tokio", feature = "runtime-async-std"),
+    all(feature = "runtime-async-std", feature = "runtime-smol"),
+    all(feature = "runtime-tokio", feature = "runtime-smol"),
+))]
+compile_error!("only one of 'runtime-smol', 'runtime-async-std' or 'runtime-tokio' features must be enabled");
 
 mod acceptor;
 mod connector;

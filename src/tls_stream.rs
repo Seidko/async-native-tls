@@ -88,6 +88,20 @@ where
     }
 }
 
+#[cfg(feature = "runtime-smol")]
+impl<S> AsyncRead for TlsStream<S>
+where
+    S: AsyncRead + AsyncWrite + Unpin,
+{
+    fn poll_read(
+        mut self: Pin<&mut Self>,
+        ctx: &mut Context<'_>,
+        buf: &mut [u8],
+    ) -> Poll<io::Result<usize>> {
+        self.with_context(ctx, |s| cvt(s.read(buf)))
+    }
+}
+
 #[cfg(feature = "runtime-tokio")]
 impl<S> AsyncRead for TlsStream<S>
 where
@@ -126,6 +140,15 @@ where
     }
 
     #[cfg(feature = "runtime-async-std")]
+    fn poll_close(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.with_context(ctx, |s| s.shutdown()) {
+            Ok(()) => Poll::Ready(Ok(())),
+            Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => Poll::Pending,
+            Err(e) => Poll::Ready(Err(e)),
+        }
+    }
+
+    #[cfg(feature = "runtime-smol")]
     fn poll_close(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<io::Result<()>> {
         match self.with_context(ctx, |s| s.shutdown()) {
             Ok(()) => Poll::Ready(Ok(())),
