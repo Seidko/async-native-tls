@@ -15,12 +15,12 @@ categories = ["asynchronous", "cryptography", "network-programming"]
 
 
 [dependencies]
-native-tls = { version = "0.2.8", features = ["alpn"] }
-thiserror = "1.0.9"
-futures-util = { version = "0.3.1", features = ["io"], optional = true }
-futures-lite = { version = "2.3.0", default-features = false, features = ["futures-io"], optional = true }
-tokio = { version = "1.0", default-features = false, features = ["io-util"], optional = true }
-url = "2.1.1"
+native-tls = { version = "^0.2.8", features = ["alpn"] }
+thiserror = "^1.0.9"
+futures-util = { version = "^0.3.1", features = ["io"], optional = true }
+futures-lite = { version = "^2.3.0", default-features = false, features = ["futures-io"], optional = true }
+tokio = { version = "^1.0", default-features = false, features = ["io-util"], optional = true }
+url = "^2.1.1"
 
 [features]
 default = ["runtime-async-std"]
@@ -33,11 +33,11 @@ runtime-smol = ["futures-lite"]
 runtime-tokio = ["tokio"]
 
 [dev-dependencies]
-env_logger = "0.9.0"
-async-std = { version = "1.6.0", features = ["attributes"] }
-tokio = { version = "1.0", features = ["full"] }
-cfg-if = "1.0.0"
-futures = "0.3.1"
+env_logger = "^0.9.0"
+async-std = { version = "^1.6.0", features = ["attributes"] }
+tokio = { version = "^1.0", features = ["full"] }
+cfg-if = "^1.0.0"
+futures = "^0.3.1"
 
 [[test]]
 name = "google"
